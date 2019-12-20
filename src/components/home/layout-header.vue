@@ -7,13 +7,14 @@
         </el-col>
         <el-col :span="12" class="right">
             <el-row  type="flex" justify="end"  align="middle" >
-                <el-input v-model="neirong" placeholder="请输入搜索的文章内容" class="right_input" style="width:190px;" prefix-icon='el-input__icon el-icon-search'></el-input>
+                <el-input v-model="sousuo" placeholder="请输入搜索的文章内容" class="right_input" style="width:190px;" prefix-icon='el-input__icon el-icon-search'></el-input>
                  <el-tooltip effect="dark" content="消息" placement="bottom"  >
                     <el-button>消息</el-button>
                 </el-tooltip>
-                <img src="../../assets/img/beijing.jpg" alt="">
+                <img :src="userInfo.photo?userInfo.photo:defaultImg" alt="">
+
                 <el-dropdown>
-                    <span >可口可乐</span>
+                    <span >{{userInfo.name}}</span>
                     <i class="el-icon-caret-bottom"></i>
                     <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>个人信息</el-dropdown-item>
@@ -33,8 +34,23 @@
 export default {
   data () {
     return {
-      neirong: ''
+      sousuo: '', // 顶部搜索栏变量
+      toke: '', // 令牌
+      userInfo: {}, // 请求回来的用户数据
+      defaultImg: require('../../assets/img/beijing.jpg')
     }
+  },
+  created () {
+    this.toke = localStorage.getItem('user-token')
+    this.$axios({
+      url: '/user/profile',
+      headers: {
+        Authorization: `Bearer ${this.toke}`
+      }
+    }).then(res => {
+    //   console.log()
+      this.userInfo = res.data.data
+    })
   }
 }
 </script >
