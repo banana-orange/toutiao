@@ -13,13 +13,13 @@
                 </el-tooltip>
                 <img :src="userInfo.photo?userInfo.photo:defaultImg" alt="">
 
-                <el-dropdown>
+                <el-dropdown @command='clickMenu'>
                     <span >{{userInfo.name}}</span>
                     <i class="el-icon-caret-bottom"></i>
                     <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>个人信息</el-dropdown-item>
-                    <el-dropdown-item>git地址</el-dropdown-item>
-                    <el-dropdown-item divided>退出</el-dropdown-item>
+                    <el-dropdown-item command='info'>个人信息</el-dropdown-item>
+                    <el-dropdown-item command='git'>git地址</el-dropdown-item>
+                    <el-dropdown-item divided command='lgout'>退出</el-dropdown-item>
                     </el-dropdown-menu>
 
                 </el-dropdown>
@@ -38,6 +38,19 @@ export default {
       toke: '', // 令牌
       userInfo: {}, // 请求回来的用户数据
       defaultImg: require('../../assets/img/beijing.jpg')
+    }
+  },
+  methods: {
+    clickMenu (command) {
+    //   console.log('aaa')
+      if (command === 'info') {
+        console.log('info')
+      } else if (command === 'git') {
+        window.location.herf = 'https://github.com/banana-orange/toutiao'
+      } else {
+        window.localStorage.removeItem('user-token')
+        this.$router.push('/login')
+      }
     }
   },
   created () {
