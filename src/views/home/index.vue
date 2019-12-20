@@ -14,7 +14,9 @@
         </el-header>
       </el-header>
 
-      <el-main>我是主体容器</el-main>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 
