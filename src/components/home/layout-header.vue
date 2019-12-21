@@ -62,7 +62,7 @@ export default {
       }
     }).then(res => {
     //   console.log()
-      this.userInfo = res.data.data
+      this.userInfo = res.data
     })
   }
 }
