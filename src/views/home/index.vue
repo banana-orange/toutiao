@@ -2,7 +2,7 @@
 
   <!-- 侧边栏 -->
   <el-container>
-    <el-aside>
+    <el-aside >
       <layout-aside></layout-aside>
     </el-aside>
     <!-- 右侧大容器 -->

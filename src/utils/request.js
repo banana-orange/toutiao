@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
+import JSONBig from 'json-bigint'
 // axios拦截器-统一处理请求token 请求拦截
 axios.interceptors.request.use(function (confug) {
   //   console.log(confug)
@@ -10,10 +11,13 @@ axios.interceptors.request.use(function (confug) {
 
 })
 
+axios.defaults.transformResponse = [function (data) {
+  return JSONBig.parse(data)
+}]
+
 axios.interceptors.response.use(function (response) {
   return response.data ? response.data : {}
 }, function (error) {
-  console.log(error.request.status)
   let status = error.request.status
   let message = ''
   switch (status) {
@@ -36,7 +40,8 @@ axios.interceptors.response.use(function (response) {
     default:
       break
   }
-  Message(message)
+  Message({ message })
+  return Promise.reject(error)
 })
 
 export default axios
