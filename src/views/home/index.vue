@@ -1,8 +1,8 @@
 <template>
 
   <!-- 侧边栏 -->
-  <el-container>
-    <el-aside >
+  <el-container >
+    <el-aside style="width: 229px;" >
       <layout-aside></layout-aside>
     </el-aside>
     <!-- 右侧大容器 -->
