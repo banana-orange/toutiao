@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card v-loading="loading">
     <bread-crumb slot="header">
       <template slot="title">评论管理</template>
     </bread-crumb>
@@ -39,7 +39,8 @@ export default {
         total: 0, // 总条目数
         pageSize: 10, // 每页显示条目个数
         currentPage: 1 // 默认页码
-      }
+      },
+      loading: false
     }
   },
   methods: {
@@ -48,6 +49,7 @@ export default {
       this.getComment()
     },
     getComment () {
+      this.loading = true
       this.$axios({
         url: '/articles',
         params: { response_type: 'comment', page: this.page.currentPage, per_page: this.page.pageSize }
@@ -55,6 +57,7 @@ export default {
         this.list = res.data.results
         this.page.total = res.data.total_count
         this.page.pageSize = res.data.per_page
+        this.loading = false
       })
     },
     formatterBoolean (row, column, cellValue, index) {
