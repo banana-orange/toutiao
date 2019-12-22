@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 import login from '../views/login/index.vue'
 import home from '../views/home/index.vue'
 import home2 from '../views/home/home.vue'
-// import comment from '../views/comment'
 
 Vue.use(VueRouter)
 
@@ -18,8 +17,12 @@ const routes = [
         component: home2
       },
       {
-        path: '/home/comment',
+        path: 'comment',
         component: () => import('../views/comment')
+      },
+      {
+        path: 'material',
+        component: () => import('../views/material')
       }
     ] }
   // {
