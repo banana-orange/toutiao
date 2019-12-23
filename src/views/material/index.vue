@@ -7,25 +7,33 @@
       <el-tab-pane label="全部图片" name="all">
         <div class="img-list">
           <el-col class="img-card" v-for="item in list" :key="item.id">
-            <img  :src="item.url" alt />
-            <el-row class='operate' type="flex" justify="space-around">
-                <i class="el-icon-star-on"></i>
-                <i class="el-icon-delete-solid"></i>
+            <img :src="item.url" alt />
+            <el-row class="operate" type="flex" justify="space-around">
+              <i class="el-icon-star-on"></i>
+              <i class="el-icon-delete-solid"></i>
             </el-row>
           </el-col>
         </div>
+
       </el-tab-pane>
       <el-tab-pane label="收藏图片" name="collect">
-          <div class="img-list">
+        <div class="img-list">
           <el-col class="img-card" v-for="item in list" :key="item.id">
-            <img  :src="item.url" alt />
-            <el-row class='operate' type="flex" justify="space-around">
-                <i class="el-icon-star-on"></i>
-                <i class="el-icon-delete-solid"></i>
+            <img :src="item.url" alt />
+            <el-row class="operate" type="flex" justify="space-around">
+              <i class="el-icon-star-on"></i>
+              <i class="el-icon-delete-solid"></i>
             </el-row>
           </el-col>
         </div>
       </el-tab-pane>
+              <el-row type="flex" justify="center">
+          <el-pagination background layout="prev, pager, next"
+          @current-change="changePage"
+          :page-size='page.pageSize'
+          :current-page='page.currentPage'
+          :total="page.total"></el-pagination>
+        </el-row>
     </el-tabs>
   </el-card>
 </template>
@@ -35,20 +43,32 @@ export default {
   data () {
     return {
       list: [],
-      activeName: 'all'
+      activeName: 'all',
+      page: {
+        total: 0, // 总条目数
+        pageSize: 8, // 每页显示条目个数
+        currentPage: 1 // 总页数
+      }
     }
   },
   methods: {
+    changePage (newPage) {
+      // console.log(newPage)
+      this.page.currentPage = newPage
+      this.getMaterial()
+    },
     changeTab () {
+      this.page.currentPage = 1
       this.getMaterial()
     },
     getMaterial () {
       this.$axios({
         url: '/user/images',
-        params: { collect: this.activeName === 'collect' }
+        params: { collect: this.activeName === 'collect', page: this.page.currentPage, per_page: this.page.pageSize }
       }).then(res => {
         console.log(res)
         this.list = res.data.results
+        this.page.total = res.data.total_count
       })
     }
   },
@@ -60,28 +80,28 @@ export default {
 
 <style lang="less" scoped>
 .img-list {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
   .img-card {
     width: 200px;
     height: 220px;
     margin: 20px 50px;
     position: relative;
-    img{
-        width: 100%;
-        height: 100%;
+    img {
+      width: 100%;
+      height: 100%;
     }
-    .operate{
-        height: 30px;
-        width: 100%;
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        background-color: #f4f5f6;
-        i{
-            line-height: 30px;
-            font-size:20px;
-        }
+    .operate {
+      height: 30px;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      background-color: #f4f5f6;
+      i {
+        line-height: 30px;
+        font-size: 20px;
+      }
     }
   }
 }
