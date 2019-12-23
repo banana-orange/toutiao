@@ -12,7 +12,7 @@ axios.interceptors.request.use(function (confug) {
 })
 
 axios.defaults.transformResponse = [function (data) {
-  return JSONBig.parse(data)
+  return data ? JSONBig.parse(data) : {}
 }]
 
 axios.interceptors.response.use(function (response) {

@@ -9,8 +9,8 @@
           <el-col class="img-card" v-for="item in list" :key="item.id">
             <img :src="item.url" alt />
             <el-row class="operate" type="flex" justify="space-around">
-              <i class="el-icon-star-on"></i>
-              <i class="el-icon-delete-solid"></i>
+              <i class="el-icon-star-on" :style="{color : item.is_collected ? 'red':'#000'}" @click="shoucang(item)"></i>
+              <i class="el-icon-delete-solid" @click="shanchu(item.id)"></i>
             </el-row>
           </el-col>
         </div>
@@ -20,10 +20,7 @@
         <div class="img-list">
           <el-col class="img-card" v-for="item in list" :key="item.id">
             <img :src="item.url" alt />
-            <el-row class="operate" type="flex" justify="space-around">
-              <i class="el-icon-star-on"></i>
-              <i class="el-icon-delete-solid"></i>
-            </el-row>
+
           </el-col>
         </div>
       </el-tab-pane>
@@ -52,6 +49,28 @@ export default {
     }
   },
   methods: {
+    shanchu (id) {
+      // console.log(item)
+      this.$confirm('您是否要删除？').then(() => {
+        this.$axios({
+          method: 'delete',
+          url: `/user/images/${id}`
+        }).then(() => {
+          this.getMaterial()
+        })
+      })
+    },
+    shoucang (item) {
+      // console.log(id)
+      this.$axios({
+        method: 'put',
+        url: `/user/images/${item.id}`,
+        data: { collect: !item.is_collected }
+      }).then(res => {
+        // console.log(res)
+        this.getMaterial()
+      })
+    },
     changePage (newPage) {
       // console.log(newPage)
       this.page.currentPage = newPage
@@ -66,7 +85,7 @@ export default {
         url: '/user/images',
         params: { collect: this.activeName === 'collect', page: this.page.currentPage, per_page: this.page.pageSize }
       }).then(res => {
-        console.log(res)
+        // console.log(res)
         this.list = res.data.results
         this.page.total = res.data.total_count
       })
@@ -101,6 +120,7 @@ export default {
       i {
         line-height: 30px;
         font-size: 20px;
+        cursor: pointer;
       }
     }
   }
