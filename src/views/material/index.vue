@@ -1,9 +1,15 @@
 <template>
-  <el-card class="zong">
+  <el-card class="zong" v-loading="loading">
     <bread-crumb slot="header">
       <template slot="title">素材管理</template>
     </bread-crumb>
+
     <el-tabs v-model="activeName" @tab-click="changeTab">
+          <el-row type="flex" justify="end">
+            <el-upload :show-file-list="false" action="" :http-request="shangchuan">
+      <el-button size="small" type="primary" >点击上传</el-button>
+            </el-upload>
+    </el-row>
       <el-tab-pane label="全部图片" name="all">
         <div class="img-list">
           <el-col class="img-card" v-for="item in list" :key="item.id">
@@ -36,6 +42,7 @@
 </template>
 
 <script>
+// import { format } from 'path'
 export default {
   data () {
     return {
@@ -45,10 +52,25 @@ export default {
         total: 0, // 总条目数
         pageSize: 8, // 每页显示条目个数
         currentPage: 1 // 总页数
-      }
+      },
+      loading: false
     }
   },
   methods: {
+    shangchuan (a) {
+      // console.log(a)
+      this.loading = true
+      let data = new FormData()
+      data.append('image', a.file)
+      this.$axios({
+        method: 'post',
+        url: '/user/images',
+        data
+      }).then(res => {
+        this.loading = false
+        this.getMaterial()
+      })
+    },
     shanchu (id) {
       // console.log(item)
       this.$confirm('您是否要删除？').then(() => {
