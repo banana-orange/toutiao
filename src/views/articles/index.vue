@@ -36,13 +36,13 @@
       <span>共找到111条符合条件的内容</span>
     </el-row>
 
-    <el-row class="xiahe" type="flex" justify="space-between" v-for="item in 100" :key="item">
+    <el-row class="xiahe" type="flex" justify="space-between" v-for="item in list" :key="item.id.toString()">
       <div class="lift">
-        <img src="../../assets/img/beijing.jpg" alt />
+        <img :src="item.cover.images.length?item.cover.images[0]:defaultImg" alt />
         <div class="wenzi">
-          <span>嘎迪恩：总有一天会活成自己讨厌的样子</span>
-          <el-tag style="width: 60px;">标签一</el-tag>
-          <span class="shijian">2019-12-24 20:25:48</span>
+          <span>{{item.title}}</span>
+          <el-tag style="width: 60px;" :type="item.status|filterType">{{item.status | filterStatus}}</el-tag>
+          <span class="shijian">{{item.pubdate}}</span>
         </div>
       </div>
 
@@ -63,7 +63,40 @@ export default {
         channel_id: null, // 频道
         dateRange: [] // 时间
       },
-      channels: []
+      channels: [],
+      list: [], // 接收内容管理数据
+      defaultImg: require('../../assets/img/beijing.jpg')
+    }
+  },
+  filters: {
+    //   文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除，不传为全部
+    filterStatus (value) {
+      switch (value) {
+        case 0:
+          return '草稿'
+        case 1:
+          return '待审核'
+        case 2:
+          return '全部'
+        case 3:
+          return '审核失败'
+        default:
+          break
+      }
+    },
+    filterType (value) {
+      switch (value) {
+        case 0:
+          return 'warning'
+        case 1:
+          return 'info'
+        case 2:
+          return ''
+        case 3:
+          return 'danger'
+        default:
+          break
+      }
     }
   },
   methods: {
@@ -73,10 +106,19 @@ export default {
       }).then(res => {
         this.channels = res.data.channels
       })
+    },
+    getArticles () {
+      this.$axios({
+        url: '/articles'
+      }).then(res => {
+        console.log(res.data.results)
+        this.list = res.data.results
+      })
     }
   },
   created () {
     this.getChannels()
+    this.getArticles()
   }
 }
 </script >
