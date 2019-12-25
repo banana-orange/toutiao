@@ -54,7 +54,7 @@
         <span>
           <i class="el-icon-edit"></i>修改
         </span>
-        <span>
+        <span @click="delMaterial(item.id)">
           <i class="el-icon-delete"></i>删除
         </span>
       </div>
@@ -121,6 +121,17 @@ export default {
     }
   },
   methods: {
+    delMaterial (id) {
+      // console.log(id.toString())
+      this.$confirm('您是否要删除？').then(() => {
+        this.$axios({
+          method: 'delete',
+          url: `/articles/${id.toString()}`
+        }).then(res => {
+          this.getConditionArticle()
+        })
+      })
+    },
     getConditionArticle () {
       let params = {
         page: this.page.currentPage,
