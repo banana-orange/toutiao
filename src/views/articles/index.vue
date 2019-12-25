@@ -13,9 +13,6 @@
           <el-radio :label="2">审核通过</el-radio>
           <el-radio :label="3">审核失败</el-radio>
         </el-radio-group>
-        {{searchForm.status }}
-        {{searchForm.channel_id}}
-        {{searchForm.dateRange}}
       </el-form-item>
       <el-form-item label="频道列表">
         <el-select placeholder="请选择" v-model="searchForm.channel_id" @change="changeCondition">
@@ -24,7 +21,7 @@
       </el-form-item>
       <el-form-item label="时间选择">
         <el-date-picker
-        @change="changeCondition"
+          @change="changeCondition"
           v-model="searchForm.dateRange"
           value-format="yyyy-MM-dd"
           type="daterange"
@@ -37,7 +34,13 @@
       <span>共找到111条符合条件的内容</span>
     </el-row>
 
-    <el-row class="xiahe" type="flex" justify="space-between" v-for="item in list" :key="item.id.toString()">
+    <el-row
+      class="xiahe"
+      type="flex"
+      justify="space-between"
+      v-for="item in list"
+      :key="item.id.toString()"
+    >
       <div class="lift">
         <img :src="item.cover.images.length?item.cover.images[0]:defaultImg" alt />
         <div class="wenzi">
@@ -48,9 +51,21 @@
       </div>
 
       <div class="right">
-        <span><i class="el-icon-edit"></i>修改</span>
-        <span><i class="el-icon-delete"></i>删除</span>
+        <span>
+          <i class="el-icon-edit"></i>修改
+        </span>
+        <span>
+          <i class="el-icon-delete"></i>删除
+        </span>
       </div>
+    </el-row>
+    <el-row type="flex" style="height: 60px;" align="middle" justify="center">
+      <el-pagination background layout="prev, pager, next"
+      :total="page.total"
+      :page-size="page.pageSize"
+      :current-page="page.currentPage"
+      @current-change="changePage"
+      ></el-pagination>
     </el-row>
   </el-card>
 </template>
@@ -66,7 +81,12 @@ export default {
       },
       channels: [],
       list: [], // 接收内容管理数据
-      defaultImg: require('../../assets/img/beijing.jpg')
+      defaultImg: require('../../assets/img/beijing.jpg'),
+      page: {
+        pageSize: 10, // 每页显示的个数
+        total: 0, // 总页数
+        currentPage: 1 // 当前页数
+      }
     }
   },
   filters: {
@@ -101,15 +121,32 @@ export default {
     }
   },
   methods: {
-    changeCondition () {
-    //   alert(this.searchForm.status)
+    getConditionArticle () {
       let params = {
+        page: this.page.currentPage,
+        per_page: this.page.pageSize,
         status: this.searchForm.status === 5 ? null : this.searchForm.status,
         channel_id: this.searchForm.channel_id,
-        begin_pubdate: this.searchForm.dateRange.length ? this.searchForm.dateRange[0] : null,
-        end_pubdate: this.searchForm.dateRange.length > 1 ? this.searchForm.dateRange[1] : null
+        begin_pubdate: this.searchForm.dateRange.length
+          ? this.searchForm.dateRange[0]
+          : null,
+        end_pubdate:
+          this.searchForm.dateRange.length > 1
+            ? this.searchForm.dateRange[1]
+            : null
       }
       this.getArticles(params)
+    },
+    changeCondition () {
+      //   alert(this.searchForm.status)
+      // 筛选条件
+      this.page.currentPage = 1
+      this.getConditionArticle()
+    },
+    // 分页事件
+    changePage (newPage) {
+      this.page.currentPage = newPage
+      this.getConditionArticle()
     },
     getChannels () {
       this.$axios({
@@ -123,8 +160,10 @@ export default {
         url: '/articles',
         params
       }).then(res => {
-        console.log(res.data.results)
+        console.log(res.data)
         this.list = res.data.results
+        this.page.total = res.data.total_count
+        this.page.currentPage = res.data.page
       })
     }
   },
@@ -162,13 +201,12 @@ export default {
         border-radius: 4px;
       }
     }
-    .right{
-        span{
+    .right {
+      span {
         font-size: 14px;
-    margin-right: 8px;
-    cursor: pointer;
-        }
-
+        margin-right: 8px;
+        cursor: pointer;
+      }
     }
   }
 }
