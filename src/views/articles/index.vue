@@ -31,7 +31,7 @@
       </el-form-item>
     </el-form>
     <el-row type="flex" align="middle" class="total">
-      <span>共找到111条符合条件的内容</span>
+      <span>共找到{{page.total}}条符合条件的内容</span>
     </el-row>
 
     <el-row
