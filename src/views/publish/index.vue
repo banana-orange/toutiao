@@ -76,11 +76,13 @@ export default {
     publishArticle (draft) {
       this.$refs.publishForm.validate(isOK => {
         if (isOK) {
+          let { articleId } = this.$route.params
           this.$axios({
-            url: '/articles',
-            method: 'post',
+            url: articleId ? `/articles/${articleId}` : '/articles',
+            method: articleId ? 'put' : 'post',
             params: { draft },
             data: this.formData
+
           }).then(res => {
             // console.log(res)
             this.$message({
@@ -99,6 +101,23 @@ export default {
         // console.log(res)
         this.formData = res.data
       })
+    }
+
+  },
+  watch: {
+    $route: function (to, from) {
+      if (to.params.articleId) {
+
+      } else {
+        this.formData = {
+          title: '', // 文章标题
+          content: '', // 文章内容
+          cover: {
+            type: 0, // 封面类型 -1:自动，0-无图，1-1张，3-3张
+            images: [] // 图片地址
+          }
+        }
+      }
     }
   },
 
