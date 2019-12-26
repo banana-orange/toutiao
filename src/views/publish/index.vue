@@ -21,12 +21,12 @@
   </el-radio-group>
       </el-form-item>
       <el-form-item label="频道：">
-            <el-select v-model="value" placeholder="请选择">
+            <el-select v-model="formData.channel_id" placeholder="请选择">
     <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
+      v-for="item in channels"
+      :key="item.id"
+      :label="item.name"
+      :value="item.id">
     </el-option>
   </el-select>
 
@@ -40,7 +40,36 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      channels: [], // 接收频道信息
+      formData: {
+        title: '', // 文章标题
+        content: '', // 文章内容
+        cover: {
+          type: 0, // 封面类型 -1:自动，0-无图，1-1张，3-3张
+          images: [] // 图片地址
+        },
+        channel_id: null // 文章id
+      }
+    }
+  },
+
+  methods: {
+    getChannels () {
+      this.$axios({
+        url: '/channels'
+      }).then(res => {
+        console.log(res.data.channels)
+        this.channels = res.data.channels
+      })
+    }
+  },
+  created () {
+    this.getChannels()
+  }
+}
 </script>
 
 <style>
