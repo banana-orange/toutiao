@@ -209,6 +209,7 @@ export default {
         .shijian {
           color: #999;
           font-size: 12px;
+
         }
       }
       img {
