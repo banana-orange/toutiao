@@ -4,7 +4,7 @@
       <el-input type="textarea" :rows="2" placeholder="请输入内容"></el-input>
       <template slot="title">发布文章</template>
     </bread-crumb>
-    <el-form label-width="100px" style="margin-left:50px" :model="formData" :rules="rules">
+    <el-form  ref="publishForm" label-width="100px" style="margin-left:50px" :model="formData" :rules="rules">
       <el-form-item label="标题：" prop="title">
         <el-input v-model="formData.title" placeholder="文章名称" style="width:60%"></el-input>
       </el-form-item>
@@ -32,8 +32,8 @@
 
       </el-form-item>
       <el-row style="margin-left:95px">
-    <el-button type="primary">发布</el-button>
-      <el-button>存为草稿</el-button>
+    <el-button type="primary" @click="publishArticle(true)">发布</el-button>
+      <el-button @click="publishArticle(false)">存为草稿</el-button>
       </el-row>
     </el-form>
   </el-card>
@@ -73,12 +73,30 @@ export default {
         console.log(res.data.channels)
         this.channels = res.data.channels
       })
+    },
+    publishArticle (draft) {
+      this.$refs.publishForm.validate(isOK => {
+        if (isOK) {
+          this.$axios({
+            url: '/articles',
+            method: 'post',
+            params: draft,
+            data: this.formData
+          }).then(res => {
+            // console.log(res)
+
+            this.$router.push('/home/articles')
+          })
+        }
+      })
     }
   },
+
   created () {
     this.getChannels()
   }
 }
+
 </script>
 
 <style>
