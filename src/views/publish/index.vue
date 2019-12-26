@@ -32,8 +32,8 @@
 
       </el-form-item>
       <el-row style="margin-left:95px">
-    <el-button type="primary" @click="publishArticle(true)">发布</el-button>
-      <el-button @click="publishArticle(false)">存为草稿</el-button>
+    <el-button type="primary" @click="publishArticle(false)">发布</el-button>
+      <el-button @click="publishArticle(true)">存为草稿</el-button>
       </el-row>
     </el-form>
   </el-card>
@@ -70,7 +70,6 @@ export default {
       this.$axios({
         url: '/channels'
       }).then(res => {
-        console.log(res.data.channels)
         this.channels = res.data.channels
       })
     },
@@ -80,20 +79,33 @@ export default {
           this.$axios({
             url: '/articles',
             method: 'post',
-            params: draft,
+            params: { draft },
             data: this.formData
           }).then(res => {
             // console.log(res)
-
+            this.$message({
+              type: 'success',
+              message: '保存成功'
+            })
             this.$router.push('/home/articles')
           })
         }
+      })
+    },
+    getArticleById (articleId) {
+      this.$axios({
+        url: `/articles/${articleId}`
+      }).then(res => {
+        // console.log(res)
+        this.formData = res.data
       })
     }
   },
 
   created () {
     this.getChannels()
+    let { articleId } = this.$route.params
+    articleId && this.getArticleById(articleId)
   }
 }
 

@@ -51,8 +51,8 @@
       </div>
 
       <div class="right">
-        <span>
-          <i class="el-icon-edit"></i>修改
+        <span @click="toModify(item.id)">
+          <i  class="el-icon-edit"></i>修改
         </span>
         <span @click="delMaterial(item.id)">
           <i class="el-icon-delete"></i>删除
@@ -121,6 +121,11 @@ export default {
     }
   },
   methods: {
+    toModify (id) {
+      var articleId = id.toString()
+      // console.log(myid)
+      this.$router.push(`/home/publish/${articleId}`)
+    },
     delMaterial (id) {
       // console.log(id.toString())
       this.$confirm('您是否要删除？').then(() => {
