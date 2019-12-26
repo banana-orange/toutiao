@@ -4,23 +4,23 @@
       <el-input type="textarea" :rows="2" placeholder="请输入内容"></el-input>
       <template slot="title">发布文章</template>
     </bread-crumb>
-    <el-form label-width="100px" style="margin-left:50px">
-      <el-form-item label="标题：">
-        <!-- label-width="150px" -->
-        <el-input v-model="input" placeholder="文章名称" style="width:60%"></el-input>
+    <el-form label-width="100px" style="margin-left:50px" :model="formData" :rules="rules">
+      <el-form-item label="标题：" prop="title">
+        <el-input v-model="formData.title" placeholder="文章名称" style="width:60%"></el-input>
       </el-form-item>
-      <el-form-item label="内容：">
-        <el-input type="textarea" :rows="4" placeholder="请输入内容"></el-input>
+
+      <el-form-item label="内容：" prop="content">
+        <el-input v-model="formData.content" type="textarea" :rows="4" placeholder="请输入内容"></el-input>
       </el-form-item>
-      <el-form-item label="封面：">
-            <el-radio-group v-model="radio">
-    <el-radio :label="3">单图</el-radio>
-    <el-radio :label="6">三图</el-radio>
-    <el-radio :label="9">无图</el-radio>
-    <el-radio :label="9">自动</el-radio>
+      <el-form-item label="封面：" prop="cover">
+            <el-radio-group v-model="formData.cover.type">
+    <el-radio :label="1">单图</el-radio>
+    <el-radio :label="3">三图</el-radio>
+    <el-radio :label="0">无图</el-radio>
+    <el-radio :label="-1">自动</el-radio>
   </el-radio-group>
       </el-form-item>
-      <el-form-item label="频道：">
+      <el-form-item label="频道：" prop="channel_id">
             <el-select v-model="formData.channel_id" placeholder="请选择">
     <el-option
       v-for="item in channels"
@@ -52,6 +52,15 @@ export default {
           images: [] // 图片地址
         },
         channel_id: null // 文章id
+      },
+      rules: {
+        title: [{ required: true, message: '文章标题不能为空' }, {
+          min: 5,
+          max: 30,
+          message: '标题的长度在5到30个字符之间'
+        }],
+        content: [{ required: true, message: '文章内容不能为空' }],
+        channel_id: [{ required: true, message: '文章频道不能为空' }]
       }
     }
   },
