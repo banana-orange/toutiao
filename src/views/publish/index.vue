@@ -20,9 +20,9 @@
     <el-radio :label="0">无图</el-radio>
     <el-radio :label="-1">自动</el-radio>
   </el-radio-group>
-  {{formData.cover}}
+
       </el-form-item>
-      <cover-image :list="formData.cover.images"></cover-image>
+      <cover-image @selectTwoImg="receiveImg" :list="formData.cover.images" ></cover-image>
       <el-form-item label="频道：" prop="channel_id">
             <el-select v-model="formData.channel_id" placeholder="请选择">
     <el-option
@@ -71,6 +71,10 @@ export default {
   },
 
   methods: {
+    receiveImg (url, index) {
+      // console.log(url, index)
+      this.formData.cover.images = this.formData.cover.images.map((item, i) => i === index ? url : item)
+    },
     getChannels () {
       this.$axios({
         url: '/channels'
