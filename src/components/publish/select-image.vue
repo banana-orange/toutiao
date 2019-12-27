@@ -1,5 +1,5 @@
-<template>
-  <el-tabs v-model="activeName">
+<template >
+  <el-tabs v-model="activeName" v-loading="loading">
     <el-tab-pane label="素材库" name="material">
       <div class="select-image-list">
         <el-card class="img-card" v-for="item in list" :key="item.id">
@@ -15,11 +15,13 @@
               ></el-pagination>
     </el-row>
     </el-tab-pane>
-    <el-tab-pane label="上传图片" name="upload">
-<!-- <el-upload
-  :show-file-list="false">
+    <el-tab-pane  label="上传图片" name="upload">
+<el-upload
+    :http-request="uploadImg"
+    action=""
+  :show-file-list="false" class='upload-img'>
     <i class="el-icon-plus"></i>
-</el-upload> -->
+</el-upload>
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -28,6 +30,7 @@
 export default {
   data () {
     return {
+      loading: false,
       activeName: 'material',
       list: [], // 接收素材数据
       page: {
@@ -38,6 +41,21 @@ export default {
     }
   },
   methods: {
+    uploadImg (params) {
+      // 上传图片
+      this.loading = true
+      let data = new FormData()
+      data.append('image', params.file)
+      this.$axios({
+        url: '/user/images',
+        method: 'POST',
+        data
+      }).then(res => {
+        // console.log(res)
+        this.$emit('selectOneImg', res.data.url)
+        this.loading = false
+      })
+    },
     clickImg (url) {
     //   console.log(url)
       this.$emit('selectOneImg', url)
@@ -78,27 +96,17 @@ export default {
     }
   }
 }
-.avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
+.upload-img{
+
+    display: flex;
+      justify-content: center;
+
+    i{
+ padding: 50px;
+        border: 1px dashed #ccc;
+        display: block;
+        font-size: 100px;
+        border-radius: 4px;
+    }
+}
 </style>
