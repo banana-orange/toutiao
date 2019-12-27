@@ -44,7 +44,7 @@ export default {
     clickMenu (command) {
     //   console.log('aaa')
       if (command === 'info') {
-        console.log('info')
+        this.$router.push('/home/account')
       } else if (command === 'git') {
         window.location.herf = 'https://github.com/banana-orange/toutiao'
       } else {
