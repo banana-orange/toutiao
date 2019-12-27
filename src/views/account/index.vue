@@ -6,16 +6,16 @@
           </bread-crumb>
           <el-form label-width="100px" style="margin-left:100px">
               <el-form-item label="用户名：">
-                  <el-input style="width:40%"></el-input>
+                  <el-input style="width:40%" v-model="data.name"></el-input>
               </el-form-item>
               <el-form-item label="简介：">
-                  <el-input style="width:40%"></el-input>
+                  <el-input style="width:40%" v-model="data.intro"></el-input>
               </el-form-item>
               <el-form-item label="邮箱：">
-                  <el-input style="width:40%"></el-input>
+                  <el-input style="width:40%" v-model="data.email"></el-input>
               </el-form-item>
               <el-form-item label="手机号：">
-                  <el-input style="width:40%"></el-input>
+                  <el-input disabled style="width:40%"  v-model="data.mobile"></el-input>
               </el-form-item>
               <el-form-item>
                   <el-button type="primary">保存信息</el-button>
@@ -25,7 +25,7 @@
           <el-upload action="" :show-file-list="false" class="shangchuan">
               <div>
                                 <p>更换头像</p>
-              <img src="../../assets/img/beijing.jpg" alt="">
+              <img :src="data.photo" alt="">
               </div>
           </el-upload>
       </el-card>
@@ -34,7 +34,30 @@
 
 <script>
 export default {
-
+  data () {
+    return {
+      data: {
+        name: '',
+        intro: '',
+        photo: '',
+        email: '',
+        mobile: ''
+      }
+    }
+  },
+  methods: {
+    getUserInfo () {
+      this.$axios({
+        url: '/user/profile'
+      }).then(res => {
+        console.log(res)
+        this.data = res.data
+      })
+    }
+  },
+  created () {
+    this.getUserInfo()
+  }
 }
 </script>
 
@@ -43,8 +66,8 @@ export default {
     .shangchuan{
         div{
             position: absolute;
-                        left: 67%;
-            bottom: 50%;
+            right: 300px;
+            bottom: -80px;
             p{
                 margin: 0;
             }
