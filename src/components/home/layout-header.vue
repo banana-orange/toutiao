@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import eventBus from '../../utils/eventBus'
 export default {
   data () {
     return {
@@ -51,20 +52,29 @@ export default {
         window.localStorage.removeItem('user-token')
         this.$router.push('/login')
       }
+    },
+
+    getUserInfo () {
+      this.$axios({
+        url: '/user/profile',
+        headers: {
+          Authorization: `Bearer ${this.toke}`
+        }
+      }).then(res => {
+        //   console.log()
+        this.userInfo = res.data
+      })
     }
+
   },
   created () {
-    this.toke = localStorage.getItem('user-token')
-    this.$axios({
-      url: '/user/profile',
-      headers: {
-        Authorization: `Bearer ${this.toke}`
-      }
-    }).then(res => {
-    //   console.log()
-      this.userInfo = res.data
+    // this.toke = localStorage.getItem('user-token')
+    this.getUserInfo()
+    eventBus.$on('UpdateInformation', () => {
+      this.getUserInfo()
     })
   }
+
 }
 </script >
 
