@@ -1,6 +1,6 @@
 <template>
-  <div>
-      <el-card>
+
+      <el-card v-loading="loading">
           <bread-crumb slot="header">
           <template slot="title">个人信息</template>
           </bread-crumb>
@@ -22,14 +22,14 @@
               </el-form-item>
           </el-form>
 
-          <el-upload action="" :show-file-list="false" class="shangchuan">
-              <div>
-                                <p>更换头像</p>
-              <img :src="formData.photo" alt="">
+          <el-upload :http-request="modifyHead" action="" :show-file-list="false" class="shangchuan">
+              <div >
+                <p>更换头像</p>
+                <img :src="formData.photo" alt="">
               </div>
           </el-upload>
       </el-card>
-  </div>
+
 </template>
 
 <script>
@@ -51,11 +51,13 @@ export default {
           pattern: /^([a-zA-Z]|[0-9])(\w|-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/,
           message: '邮箱格式不正确'
         }]
-      }
+      },
+      loading: false
     }
   },
   methods: {
     saveUserInfo () {
+      // 手动校验通过调取接口上传数据
       this.$refs.myForm.validate().then(() => {
         this.$axios({
           url: '/user/profile',
@@ -70,14 +72,30 @@ export default {
       })
     },
     getUserInfo () {
+      // 获取用户信息
       this.$axios({
         url: '/user/profile'
       }).then(res => {
         this.formData = res.data
       })
+    },
+    modifyHead (params) {
+      // 修改头像
+      this.loading = true
+      let data = new FormData()
+      data.append('photo', params.file)
+      this.$axios({
+        url: '/user/photo',
+        method: 'patch',
+        data
+      }).then(res => {
+        console.log(res)
+        this.formData.photo = res.data.photo
+        this.loading = false
+      })
     }
-
   },
+
   created () {
     this.getUserInfo()
   }
@@ -90,7 +108,7 @@ export default {
         div{
             position: absolute;
             right: 300px;
-            bottom: -80px;
+            top: 150px;
             p{
                 margin: 0;
             }
