@@ -12,8 +12,8 @@
     </el-row>
       <el-tab-pane label="全部图片" name="all">
         <div class="img-list">
-          <el-col class="img-card" v-for="item in list" :key="item.id">
-            <img :src="item.url" alt />
+          <el-col class="img-card" v-for="(item,index) in list" :key="item.id">
+            <img :src="item.url" alt  @click="lunbo(index)"/>
             <el-row class="operate" type="flex" justify="space-around">
               <i class="el-icon-star-on" :style="{color : item.is_collected ? 'red':'#000'}" @click="shoucang(item)"></i>
               <i class="el-icon-delete-solid" @click="shanchu(item.id)"></i>
@@ -24,8 +24,8 @@
       </el-tab-pane>
       <el-tab-pane label="收藏图片" name="collect">
         <div class="img-list">
-          <el-col class="img-card" v-for="item in list" :key="item.id">
-            <img :src="item.url" alt />
+          <el-col class="img-card" v-for="(item,index) in list" :key="item.id">
+            <img :src="item.url" alt @click="lunbo(index)" />
 
           </el-col>
         </div>
@@ -38,6 +38,13 @@
           :total="page.total"></el-pagination>
         </el-row>
     </el-tabs>
+    <el-dialog :visible.sync="dialogVisible" @opened="openEnd">
+  <el-carousel ref="zoumadeng" indicator-position="outside" height="500px">
+    <el-carousel-item v-for="item in list" :key="item.id">
+      <img :src="item.url" alt="" class="lunboImg">
+    </el-carousel-item>
+  </el-carousel>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -53,10 +60,19 @@ export default {
         pageSize: 8, // 每页显示条目个数
         currentPage: 1 // 总页数
       },
-      loading: false
+      loading: false,
+      dialogVisible: false, // 弹层
+      xiabiao: ''
     }
   },
   methods: {
+    openEnd () {
+      this.$refs.zoumadeng.setActiveItem(this.xiabiao)
+    },
+    lunbo (index) {
+      this.dialogVisible = true
+      this.xiabiao = index
+    },
     shangchuan (a) {
       // console.log(a)
       this.loading = true
@@ -146,5 +162,9 @@ export default {
       }
     }
   }
+}
+.lunboImg{
+  height: 500px;
+  width: 100%;
 }
 </style>

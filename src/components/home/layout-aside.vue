@@ -36,7 +36,7 @@ export default {
 <style lang='less' scoped>
     .layout-aside{
         width: 230px;
-        height: 100vh;
+        height: 100%;
         background-color: #323745;
         .logo{
             padding: 10px 0;
